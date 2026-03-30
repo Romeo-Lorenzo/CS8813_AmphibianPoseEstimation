@@ -2,10 +2,60 @@ import argparse
 import csv
 import math
 from pathlib import Path
+from typing import Any, Callable, cast
 
 import pandas as pd
 from PIL import Image
 import sleap_io as sio
+
+
+###############################################################################
+###############################################################################
+###                                                                         ###
+###                              HOW TO RUN                                 ###
+###                                                                         ###
+###  1) Open a terminal in this script's folder.                            ###
+###  2) Run with defaults (from the section below):                         ###
+###     python export_sleap_pkg_to_dlc.py                                   ###
+###  3) Optional override example:                                           ###
+###     python export_sleap_pkg_to_dlc.py --slp train.pkg.slp               ###
+###         --scorer Lorenzo                                                 ###
+###         --out-dir SLEAP_Exported_to_DLC                                 ###
+###                                                                         ###
+###  Output structure created:                                               ###
+###  SLEAP_Exported_to_DLC/labeled-data/                                    ###
+###    - img0000.png, img0001.png, ...                                      ###
+###    - CollectedData_<scorer>.csv                                         ###
+###    - CollectedData_<scorer>.h5                                          ###
+###                                                                         ###
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+###############################################################################
+###                                                                         ###
+###                    CHANGE YOUR DEFAULT INPUTS HERE                      ###
+###                                                                         ###
+###  Example values:                                                        ###
+###  - "train.pkg.slp"                                                      ###
+###  - "my_dataset.pkg.slp"                                                 ###
+###  - "User"                                                            ###
+###                                                                         ###
+###  If you run without CLI flags, these defaults will be used:            ###
+###  --slp, --scorer                                                         ###
+###                                                                         ###
+###############################################################################
+###############################################################################
+DEFAULT_SLEAP_PACKAGE_NAME = "test.pkg.slp"
+DEFAULT_SCORER = "User"  # Change this to your name or a nickname if you like!
+###############################################################################
+###############################################################################
+###                                                                         ###
+###                    END OF DEFAULT INPUTS EDIT SECTION                   ###
+###                                                                         ###
+###############################################################################
+###############################################################################
 
 
 def format_coord(value: float) -> str:
@@ -22,18 +72,20 @@ def pick_instance(labeled_frame):
     return None
 
 
-def export_sleap_to_dlc(slp_path: Path, output_dir: Path, scorer: str, subset_name: str) -> None:
-    labels = sio.load_slp(str(slp_path))
+def export_sleap_to_dlc(slp_path: Path, output_dir: Path, scorer: str) -> None:
+    slp_loader = cast(Callable[[str], Any], getattr(sio, "load_slp", None))
+    if not callable(slp_loader):
+        raise RuntimeError("sleap_io.load_slp is not available in this environment.")
+
+    labels = slp_loader(str(slp_path))
     if not labels.skeletons:
         raise RuntimeError("No skeletons found in the SLEAP package.")
 
     labeled_data_dir = output_dir / "labeled-data"
-    subset_dir = labeled_data_dir / subset_name
-    subset_dir.mkdir(parents=True, exist_ok=True)
+    labeled_data_dir.mkdir(parents=True, exist_ok=True)
 
-    csv_in_subset = subset_dir / f"CollectedData_{scorer}.csv"
     csv_in_labeled_data = labeled_data_dir / f"CollectedData_{scorer}.csv"
-    h5_in_subset = subset_dir / f"CollectedData_{scorer}.h5"
+    h5_in_labeled_data = labeled_data_dir / f"CollectedData_{scorer}.h5"
 
     node_names = [node.name for node in labels.skeletons[0].nodes]
     header_scorer = ["scorer"] + [scorer for _ in node_names for __ in (0, 1)]
@@ -54,38 +106,33 @@ def export_sleap_to_dlc(slp_path: Path, output_dir: Path, scorer: str, subset_na
             continue
 
         image_name = f"img{row_index:04d}.png"
-        image_path = subset_dir / image_name
+        image_path = labeled_data_dir / image_name
 
         image_array = image_array.squeeze()
         Image.fromarray(image_array).save(image_path)
 
         points = instance.numpy()
-        row = [f"labeled-data/{subset_name}/{image_name}"]
+        row = [f"labeled-data/{image_name}"]
         for x, y in points:
             row.extend([format_coord(x), format_coord(y)])
         rows.append(row)
         exported_count += 1
 
-    with csv_in_subset.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f, lineterminator="\n")
-        writer.writerows(rows)
-
     with csv_in_labeled_data.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f, lineterminator="\n")
         writer.writerows(rows)
 
-    df = pd.read_csv(csv_in_subset, header=[0, 1, 2], index_col=0)
-    df.to_hdf(h5_in_subset, key="df_with_missing", mode="w")
+    df = pd.read_csv(csv_in_labeled_data, header=[0, 1, 2], index_col=0)
+    df.to_hdf(h5_in_labeled_data, key="df_with_missing", mode="w")
 
     print("Export complete.")
     print(f"Input SLP: {slp_path}")
     print(f"Output root: {output_dir}")
-    print(f"Subset folder: {subset_dir}")
+    print(f"Labeled-data folder: {labeled_data_dir}")
     print(f"Frames exported: {exported_count}")
     print(f"Frames skipped: {skipped_count}")
-    print(f"CSV (subset): {csv_in_subset}")
-    print(f"CSV (labeled-data): {csv_in_labeled_data}")
-    print(f"H5 (subset): {h5_in_subset}")
+    print(f"CSV: {csv_in_labeled_data}")
+    print(f"H5: {h5_in_labeled_data}")
 
 
 def parse_args() -> argparse.Namespace:
@@ -98,8 +145,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--slp",
         type=Path,
-        required=True,
-        help="Path to the input SLEAP package (.slp).",
+        default=Path(DEFAULT_SLEAP_PACKAGE_NAME),
+        help=(
+            "Path to the input SLEAP package (.slp). "
+            "Defaults to DEFAULT_SLEAP_PACKAGE_NAME in this script."
+        ),
     )
     parser.add_argument(
         "--out-dir",
@@ -113,14 +163,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--scorer",
         type=str,
-        required=True,
-        help="Scorer name used in CollectedData_<scorer>.csv.",
-    )
-    parser.add_argument(
-        "--subset-name",
-        type=str,
-        required=True,
-        help="Subfolder name inside labeled-data (example: fly32_train).",
+        default=DEFAULT_SCORER,
+        help=(
+            "Scorer name used in CollectedData_<scorer>.csv. "
+            "Defaults to DEFAULT_SCORER in this script."
+        ),
     )
     return parser.parse_args()
 
@@ -138,7 +185,6 @@ def main() -> None:
         slp_path=slp_path,
         output_dir=out_dir,
         scorer=args.scorer,
-        subset_name=args.subset_name,
     )
 
 
