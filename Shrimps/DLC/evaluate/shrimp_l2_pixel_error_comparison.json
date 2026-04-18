@@ -1,0 +1,30 @@
+{
+  "lower_error_is_better": true,
+  "metrics": {
+    "DLC": {
+      "method": "DLC",
+      "comparable_frames": 964,
+      "comparable_points": 10534,
+      "mean_pixel_error": 17.574307,
+      "median_pixel_error": 7.514311,
+      "rmse_pixel_error": 54.253228,
+      "p95_pixel_error": 57.9831
+    },
+    "SLEAP": {
+      "method": "SLEAP",
+      "comparable_frames": 1000,
+      "comparable_points": 14749,
+      "mean_pixel_error": 0.14797652570065048,
+      "median_pixel_error": 0.0,
+      "rmse_pixel_error": 4.880575831459957,
+      "p95_pixel_error": 0.0
+    }
+  },
+  "comparison_dlc_minus_sleap": {
+    "mean_pixel_error": 17.426330474299352,
+    "median_pixel_error": 7.514311,
+    "rmse_pixel_error": 49.37265216854004,
+    "p95_pixel_error": 57.9831
+  },
+  "winner_by_mean_error": "SLEAP"
+}

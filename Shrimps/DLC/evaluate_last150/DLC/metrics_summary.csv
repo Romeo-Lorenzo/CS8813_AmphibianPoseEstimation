@@ -1,0 +1,2 @@
+method,comparable_frames,comparable_points,mean_pixel_error,median_pixel_error,rmse_pixel_error,p95_pixel_error
+DLC,150,1593,20.656060,8.236752,64.073497,58.468392

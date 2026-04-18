@@ -40,7 +40,9 @@ The current canonical working area is consolidated under `Projects/`.
 - `YOLO_TRAIN/`
   - YOLO training scripts and checkpoints
 - `tools/`
-  - conversion, splitting, extraction, and metric utilities
+  - copied utility scripts for conversion, splitting, extraction, and metric evaluation
+- `inspect_packages.py`
+  - small SLEAP package inspection helper kept inside the publishable tree
 - `dataset/`
   - legacy or auxiliary locations (not the canonical shrimp source of truth)
 
@@ -53,19 +55,19 @@ Current shrimp split policy:
 
 ## Core Utilities
 
-- `tools/RecycleInferedToGroundTruth.py`
+- `Projects/tools/RecycleInferedToGroundTruth.py`
   - converts inferred SLEAP labels into GT-style packages
-- `tools/split_sleap_pkg_chronological.py`
+- `Projects/tools/split_sleap_pkg_chronological.py`
   - chronological split for SLEAP package files
-- `tools/export_sleap_pkg_to_dlc.py`
+- `Projects/tools/export_sleap_pkg_to_dlc.py`
   - general SLEAP-to-DLC conversion
-- `tools/export_sleap_shrimp_to_dlc.py`
+- `Projects/tools/export_sleap_shrimp_to_dlc.py`
   - shrimp-focused SLEAP-to-DLC conversion helper
-- `tools/CompareMetrics.py`
+- `Projects/tools/CompareMetrics.py`
   - metric comparison across methods
-- `tools/extract_frames_from_video.py`
+- `Projects/tools/extract_frames_from_video.py`
   - frame extraction from source videos
-- `tools/make_mp4_from_images.py`
+- `Projects/tools/make_mp4_from_images.py`
   - video reconstruction from image sequences
 
 ## Reproducibility and Environment
@@ -76,7 +78,7 @@ Primary Python environment:
 Windows PowerShell example:
 
 ```powershell
-& "DLC/.venv/Scripts/python.exe" tools/CompareMetrics.py
+& "DLC/.venv/Scripts/python.exe" Projects/tools/CompareMetrics.py
 ```
 
 ## Standard Workflow

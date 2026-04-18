@@ -1,0 +1,83 @@
+    # Project definitions (do not edit)
+Task: Shrimps
+scorer: Lolo
+date: Apr12
+multianimalproject: true
+identity: false
+
+    # Project path (change when moving around)
+project_path: 
+  C:/Users/romeo/Documents/GitHub/CS8813_AmphibianPoseEstimation/DLC/Shrimps-Lolo-2026-04-12
+
+    # Annotation data set configuration (and individual video cropping parameters)
+video_sets:
+  ? C:/Users/romeo/Documents/GitHub/CS8813_AmphibianPoseEstimation/DLC/Shrimps-Lolo-2026-04-12/videos/three_big_shrimps_video_two.avi
+  : crop: 0, 660, 0, 668
+individuals:
+- shrimp1
+- shrimp2
+- shrimp3
+- shrimp4
+- shrimp5
+- shrimp6
+- shrimp7
+uniquebodyparts: []
+multianimalbodyparts:
+- head
+- mid1
+- mid2
+- mid3
+- tail
+bodyparts:
+- head
+- mid1
+- mid2
+- mid3
+- tail
+
+    # Fraction of video to start/stop when extracting frames for labeling/refinement
+
+    # Fraction of video to start/stop when extracting frames for labeling/refinement
+start: 0
+stop: 1
+numframes2pick: 20
+
+    # Plotting configuration
+skeleton:
+- - head
+  - mid1
+- - mid1
+  - mid2
+- - mid2
+  - mid3
+- - mid3
+  - tail
+skeleton_color: black
+pcutoff: 0.6
+dotsize: 12
+alphavalue: 0.7
+colormap: rainbow
+
+    # Training,Evaluation and Analysis configuration
+TrainingFraction:
+- 0.95
+iteration: 0
+default_net_type: resnet_50
+default_augmenter: default
+default_track_method: ellipse
+snapshotindex: -1
+batch_size: 8
+
+    # Cropping Parameters (for analysis and outlier frame detection)
+cropping: false
+    #if cropping is true for analysis, then set the values here:
+x1: 0
+x2: 640
+y1: 277
+y2: 624
+
+    # Refinement configuration (parameters from annotation dataset configuration also relevant in this stage)
+corner2move2:
+- 50
+- 50
+move2corner: true

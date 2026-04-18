@@ -1,0 +1,20 @@
+data_config:
+  train_labels_path:
+  - C:/Users/romeo/Documents/GitHub/CS8813_AmphibianPoseEstimation/dataset/shrimp/shrimp_train.pkg.slp
+  val_labels_path: C:/Users/romeo/Documents/GitHub/CS8813_AmphibianPoseEstimation/dataset/shrimp/shrimp_val.pkg.slp
+  validation_fraction: 0.0
+  use_same_data_for_val: false
+  test_file_path: C:/Users/romeo/Documents/GitHub/CS8813_AmphibianPoseEstimation/dataset/shrimp/shrimp_test.pkg.slp
+  provider: LabelsReader
+  user_instances_only: true
+  data_pipeline_fw: torch_dataset_cache_img_memory
+  cache_img_path: null
+  use_existing_imgs: false
+  delete_cache_imgs_after_training: true
+  parallel_caching: true
+  cache_workers: 0
+  preprocessing:
+    ensure_rgb: false
+    ensure_grayscale: true
+    max_height: 192
+    max_width: 192
