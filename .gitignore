@@ -1,16 +1,38 @@
-DLC/SLEAP_export/test.pkg.slp.260315_174451.predictions.slp
-DLC/SLEAP_export/train.pkg.slp
-DLC/SLEAP_export/test.pkg.slp
-/DLC/Fly32-Lorenzo-2026-03-16/labeled-data/fly32_train
-DLC/Fly32-Lorenzo-2026-03-16/labeled-data/CollectedData_Lorenzo.csv
-/SLEAP/datasets
-SLEAP/datasets.zip
-SLEAP/Fly32/train.pkg.slp
-SLEAP/Fly32/test.pkg.slp
-SLEAP/Fly32/val.pkg.slp
-SLEAP/Fly32/072212_173836@0-3200.mp4
-SLEAP/Fly32/072212_173836@0-3200.slp
-/DLC/Fly32-Lorenzo-2026-03-16/videos
-/DLC/Fly32-Lorenzo-2026-03-16/training-datasets
-/DLC/Fly32-Lorenzo-2026-03-16/labeled-data
-/DLC/Fly32-Lorenzo-2026-03-16/evaluation-results/iteration-0/Fly32Mar16-trainset95shuffle1
+# Projects-level ignore rules
+# Goal: keep lightweight, reproducible artifacts (metrics/configs/scripts)
+# and avoid pushing large raw media/training data.
+
+# Media (videos + images)
+**/*.mp4
+**/*.avi
+**/*.mov
+**/*.mkv
+**/*.webm
+**/*.wmv
+**/*.mpg
+**/*.mpeg
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.bmp
+**/*.gif
+**/*.tif
+**/*.tiff
+
+# SLEAP/DLC raw label packages and heavy intermediates
+**/*.slp
+**/*.pkg.slp
+**/*.h5
+**/*.pickle
+
+# Large training/inference artifact folders
+**/videos/**
+**/labeled-data/**
+**/training-datasets/**
+**/holdout_backup/**
+**/dlc-models/**
+**/models/**
+**/predictions/**
+
+# Keep evaluation outputs and important metadata by default
+# (csv/json/yaml/txt/py/npz/ckpt are not ignored)
