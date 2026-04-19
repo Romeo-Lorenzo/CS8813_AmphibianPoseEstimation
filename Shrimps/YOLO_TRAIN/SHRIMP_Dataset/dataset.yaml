@@ -1,0 +1,10 @@
+path: C:\Users\mathi\Desktop\cours_Gtech\YOLO_TRAIN\SHRIMP_Dataset
+train: images/train
+val: images/val
+test: images/test
+
+# Configuration Pose
+kpt_shape: [5, 3] # [nombre de points, dimension(x,y,visibilité)]
+nc: 1
+names:
+  0: animal

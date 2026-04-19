@@ -1,0 +1,10 @@
+path: C:\Users\mathi\Documents\GitHub\CS8813_AmphibianPoseEstimation\YOLO_TRAIN\YOLO_Pose_Dataset
+train: images/train
+val: images/val
+test: images/test
+
+# Configuration Pose
+kpt_shape: [32, 3] # [nombre de points, dimension(x,y,visibilité)]
+nc: 1
+names:
+  0: animal
